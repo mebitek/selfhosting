@@ -1,0 +1,30 @@
+(https_header) {
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubdomains"
+    X-XSS-Protection "1; mode=block"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "SAMEORIGIN"
+    Referrer-Policy "same-origin"
+    (https_header) {
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubdomains"
+    X-XSS-Protection "1; mode=block"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "SAMEORIGIN"
+    Referrer-Policy "same-origin"
+  }
+}
+  }
+}
+
+
+{$MASTODON_DOMAIN} {
+  tls /root/certs/caddy.pem /root/certs/caddy.key
+  handle /api/v1/streaming* {
+    reverse_proxy mastodon-streaming:4000
+  }
+
+  handle {
+    reverse_proxy mastodon-web:3001
+  }
+}

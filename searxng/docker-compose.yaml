@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+  redis:
+    container_name: redis
+    image: "redis:alpine"
+    restart: always
+    command: redis-server --save "" --appendonly "no"
+    networks:
+      - searxng
+    tmpfs:
+      - /var/lib/redis
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+
+
+  searx:
+    container_name: searxng
+    image: searxng/searxng:latest
+    restart: always
+    networks:
+      - searxng
+    ports:
+     - 4004:8080
+    volumes:
+      - /home/pi/searxng:/etc/searxng:rw
+    environment:
+      - BIND_ADDRESS=0.0.0.0:8080
+      - BASE_URL=https://searx.mebitek.com
+      - INSTANCE_NAME=searx.mebitek.com
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+
+networks:
+  searxng:
+    ipam:
+      driver: default
+
+

@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+
+  matomo:
+    image: matomo
+    restart: always
+    ports:
+      - 8384:80
+    environment:
+      - MATOMO_DATABASE_HOST=db
+      - MATOMO_DATABASE_TABLES_PREFIX=mat_
+      - MATOMO_DATABASE_USERNAME=${DATABASE_USER}
+      - MATOMO_DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - MATOMO_DATABASE_DBNAME=matomo
+    volumes:
+      - /home/pi/matomo:/var/www/html
+    links:
+      - db:db
+
+  db:
+    image: yobasystems/alpine-mariadb:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: matomo
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - /home/pi/matomodb:/var/lib/mysql

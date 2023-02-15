@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  # The load balancer
+  nginx:
+    image: nginx:1.16.0-alpine
+    volumes:
+      - /home/pi/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8080:80"
+
+  # The web server1
+  server1:
+    image: nginx:1.16.0-alpine
+    volumes:
+      - /home/pi/mebitek.com:/usr/share/nginx/html

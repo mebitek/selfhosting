@@ -1,0 +1,10 @@
+https://{$MASTODON_DOMAIN} {
+  tls /root/certs/caddy.pem /root/certs/caddy.key
+  handle /api/v1/streaming* {
+    reverse_proxy mastodon-streaming:4000
+  }
+
+  handle {
+    reverse_proxy mastodon-web:3000
+  }
+}
