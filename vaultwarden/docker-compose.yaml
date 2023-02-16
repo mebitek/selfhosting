@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  # The load balancer
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    restart: always
+    volumes:
+      - /home/pi/vaultwarden:/data/
+      - /home/pi/compose/vaultwarden/certs:/ssl/
+    environment:
+      - ROCKET_TLS={certs="/ssl/vault.pem",key="/ssl/vault.key"}
+      - SIGNUPS_ALLOWED=false
+      - INVITATIONS_ALLOWED=false
+      - WEBSOCKET_ENABLED=true
+      - DOMAIN=${VAULT_DOMAIN}
+      - SMTP_HOST=${VAULT_SMTP_HOST}
+      - SMTP_FROM=${VAULT_SMTP_FROM}
+      - SMTP_PORT=${VAULT_SMTP_PORT}
+      - SMTP_SECURITY=${VAULT_SMTP_SECURITY}
+      - SMTP_SSL=true
+      - SMTP_USERNAME=${VAULT_SMTP_USERNAME}
+      - SMTP_PASSWORD=${VAULT_SMTP_PASSWORD}
+    ports:
+      - "4443:80"
