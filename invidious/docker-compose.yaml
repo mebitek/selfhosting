@@ -1,0 +1,66 @@
+version: "3"
+services:
+
+  invidious:
+    image: quay.io/invidious/invidious:latest-arm64 # ARM64/AArch64 devices
+    restart: always
+    environment:
+      # Please read the following file for a comprehensive list of all available
+      # configuration options and their associated syntax:
+      # https://github.com/iv-org/invidious/blob/master/config/config.example.yml
+      INVIDIOUS_CONFIG: |
+        db:
+          dbname: invidious
+          user: ${INVIDIOUS_DB_USER}
+          password: ${INVIDIOUS_DB_PASSWORD}
+          host: invidious-db
+          port: 5432
+        domain: ${INVIDIOUS_DOMAIN}
+        https_only: true 
+        check_tables: true
+        popular_enabled: false
+        registration_enabled: false
+        statistics_enabled: true
+        external_port: 443
+        
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -nv --tries=1 --spider http://127.0.0.1:3000/api/v1/comments/jNQXAC9IVRw || exit 1']
+      interval: 30s
+      timeout: 5s
+      retries: 2
+    logging:
+      options:
+        max-size: "1G"
+        max-file: "4"
+    depends_on:
+      - invidious-db
+
+  invidious-db:
+    image: docker.io/library/postgres:14
+    restart: always
+    volumes:
+      - /home/pi/invidious/postgresdata:/var/lib/postgresql/data
+      - /home/pi/invidious/config/sql:/config/sql
+      - /home/pi/invidious/docker/init-invidious-db.sh:/docker-entrypoint-initdb.d/init-invidious-db.sh
+    environment:
+      POSTGRES_DB: invidious
+      POSTGRES_USER: ${INVIDIOUS_DB_USER}
+      POSTGRES_PASSWORD: ${INVIDIOUS_DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+
+  invidious-proxy:
+    image: 'caddy:latest'
+    restart: always
+    volumes:
+      - '/home/pi/compose/invidious/certs:/root/certs'
+      - '/home/pi/invidious/caddy-data:/data'
+      - '/home/pi/invidious/caddy-config:/config'
+      - '/home/pi/compose/invidious/caddyfile:/etc/caddy/Caddyfile:ro'
+    environment:
+      INVIDIOUS_DOMAIN: '${INVIDIOUS_DOMAIN}'
+    ports:
+      - '7443:443'
+    depends_on:
+      invidious:
+        condition: service_healthy

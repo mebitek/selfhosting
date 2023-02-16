@@ -1,0 +1,10 @@
+{
+  debug
+}
+https://{$INVIDIOUS_DOMAIN} {
+  tls /root/certs/caddy.pem /root/certs/caddy.key
+
+  handle {
+    reverse_proxy invidious:3000
+  }
+}
