@@ -28,6 +28,9 @@ services:
     environment:
       MASTODON_ADMIN_USERNAME: '${MASTODON_ADMIN_USERNAME}'
       MASTODON_ADMIN_EMAIL: '${MASTODON_ADMIN_EMAIL}'
+      WEB_CONCURRENCY: 1
+      MAX_THREADS: 4
+      SINGLE_USER_MODE: "true" 
     depends_on:
       - mastodon-db
       - mastodon-redis
@@ -42,6 +45,8 @@ services:
       file: 'docker-compose.base.yaml'
       service: 'mastodon-base'
     command: 'node ./streaming'
+    environment:
+      STREAMING_CLUSTER_NUM: 2
     healthcheck:
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
     depends_on:
@@ -51,15 +56,10 @@ services:
   mastodon-es:
     image: 'docker.elastic.co/elasticsearch/elasticsearch:7.17.7'
     restart: always
-    deploy:
-     resources: 
-      limits: 
-        cpus: "0.25"  # Use at most 50% of one CPU core
-        memory: 512M  
     volumes:
       - 'mastodon-es-volume:/usr/share/elasticsearch/data'
     environment:
-      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      - 'ES_JAVA_OPTS=-Xms128m -Xmx512m'
       - 'xpack.license.self_generated.type=basic'
       - 'xpack.security.enabled=false'
       - 'xpack.watcher.enabled=false'
@@ -96,7 +96,7 @@ services:
     extends:
       file: 'docker-compose.base.yaml'
       service: 'mastodon-base'
-    command: 'bundle exec sidekiq'
+    command: 'bundle exec sidekiq -c 8'
     depends_on:
       mastodon-web:
         condition: service_healthy
