@@ -1,0 +1,66 @@
+version: '3.7'
+
+services:
+  restic-local:
+    image: mazzolino/restic:latest
+    container_name: restic-local
+    hostname: raspberrypi
+    restart: always
+    environment:
+      BACKUP_CRON: "* 2 * * *"
+      RESTIC_REPOSITORY: /mnt/repository/raspberry4
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD}
+      RESTIC_BACKUP_SOURCES: /mnt/backup
+      RESTIC_BACKUP_ARGS: --tag mybackup
+      RESTIC_FORGET_ARGS: --prune --keep-last 5 --keep-daily 1
+      TZ: Europe/Berlin
+    volumes:
+      # optional, only to this if your minio S3 doesn't save
+      # its data in this directory
+      - /var/lib/docker/volumes:/mnt/backup/docker-volumes:ro
+      - /mnt/seagate/raspberry4/backup:/mnt/repository/raspberry4:rw
+      - /home/pi:/mnt/backup/home/pi:ro
+
+  restic-r2:
+    image: mazzolino/restic:latest
+    container_name: restic-r2
+    hostname: raspberrypi
+    restart: always
+    environment:
+      BACKUP_CRON: "* 2 * * *"
+      RESTIC_REPOSITORY: s3:${S3_REPOSITORY}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD}
+      RESTIC_BACKUP_SOURCES: /mnt/backup
+      RESTIC_BACKUP_ARGS: --tag mybackup
+      RESTIC_FORGET_ARGS: --prune --keep-last 1 --keep-daily 1
+      TZ: Europe/Berlin
+    volumes:
+      # optional, only to this if your minio S3 doesn't save
+      # its data in this directory
+      - /var/lib/docker/volumes:/mnt/backup/docker-volumes:ro
+      - /mnt/seagate/raspberry4/backup:/mnt/repository/raspberry4:rw
+      - /home/pi:/mnt/backup/home/pi:ro
+
+  prune-local:
+    image: mazzolino/restic:latest
+    hostname: raspberrypi
+    environment:
+      RUN_ON_STARTUP: "true"
+      PRUNE_CRON: "0 0 4 * * *"
+      RESTIC_REPOSITORY:  /mnt/repository/raspberry4
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD}
+      TZ: Europe/Berlin
+
+  prune-r2:
+    image: mazzolino/restic:latest
+    hostname: raspberrypi
+    environment:
+      RUN_ON_STARTUP: "true"
+      PRUNE_CRON: "0 0 4 * * *"
+      RESTIC_REPOSITORY:  s3:${S3_REPOSITORY}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD}
+      TZ: Europe/Berlin
