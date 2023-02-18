@@ -8,3 +8,8 @@
 - [NGNIX](https://github.com/nginx/nginx)
 - [Matomo](https://github.com/matomo-org/matomo)
 - [Mastodon](https://github.com/mastodon/mastodon)
+- [Invidious](https://github.com/iv-org/invidious)
+- [Jellyfin](https://github.com/jellyfin/jellyfin)
+- [Pi-Hole](https://github.com/pi-hole/pi-hole)
+- [Restic](https://github.com/restic/restic)
+- [Vaultwarden](https://github.com/dani-garcia/vaultwarden)
