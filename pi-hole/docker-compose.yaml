@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  pihole:
+    image: docker.io/pihole/pihole:latest
+    container_name: pihole
+    restart: always
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
+      - "8082:80/tcp"
+    volumes:
+      - '/home/pi/pi-hole/etc-pihole:/etc/pihole'
+      - '/home/pi/pi-hole/etc-dnsmasq.d:/etc/dnsmasq.d'
+    environment:
+      TZ: 'Europe/Berlin'
+      WEBPASSWORD: ${PIHOLE_PASSWORD}
