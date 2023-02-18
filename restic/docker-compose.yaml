@@ -46,6 +46,7 @@ services:
   prune-local:
     image: mazzolino/restic:latest
     hostname: raspberrypi
+    restart: always
     environment:
       RUN_ON_STARTUP: "true"
       PRUNE_CRON: "0 0 4 * * *"
@@ -56,6 +57,7 @@ services:
   prune-r2:
     image: mazzolino/restic:latest
     hostname: raspberrypi
+    restart: always
     environment:
       RUN_ON_STARTUP: "true"
       PRUNE_CRON: "0 0 4 * * *"
