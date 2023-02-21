@@ -4,9 +4,20 @@ services:
     image: ghcr.io/benphelps/homepage:latest
     restart: always
     container_name: homepage
+    hostname: homepage.mebitek.local
+    dns: 172.10.1.2
     ports:
       - 3000:3000
     volumes:
       - /home/pi/homepage/config:/app/config # Make sure your local config directory exists
       - /var/run/docker.sock:/var/run/docker.sock:ro # (optional) For docker integrations
       - /home/pi/homepage/icons:/app/public/icons
+
+    networks:
+      pihole:
+       ipv4_address: 172.10.1.3
+
+
+networks:
+    pihole:
+      external: true

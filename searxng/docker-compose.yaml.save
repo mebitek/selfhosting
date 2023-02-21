@@ -7,8 +7,7 @@ services:
     restart: always
     command: redis-server --save "" --appendonly "no"
     networks:
-      pihole:
-       ipv4_address: 172.10.1.4
+      - pihole
 
     tmpfs:
       - /var/lib/redis
@@ -43,7 +42,6 @@ services:
       - DAC_OVERRIDE
     networks:
       pihole:
-       ipv4_address: 172.10.1.5
 
 networks:
     pihole:

@@ -4,6 +4,7 @@ services:
   pihole:
     image: docker.io/pihole/pihole:latest
     container_name: pihole
+    hostname: pihole.mebitek.local
     restart: always
     ports:
       - "53:53/tcp"
@@ -16,3 +17,13 @@ services:
     environment:
       TZ: 'Europe/Berlin'
       WEBPASSWORD: ${PIHOLE_PASSWORD}
+   
+    networks:
+      pihole:
+       ipv4_address: 172.10.1.2
+
+
+networks:                                                                       
+   pihole:                                                                    
+     external:                                                               
+         true

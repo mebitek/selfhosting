@@ -10,6 +10,10 @@ services:
       POSTGRES_DB: '${MASTODON_POSTGRES_DATABASE}'
       POSTGRES_USER: '${MASTODON_POSTGRES_USERNAME}'
       POSTGRES_PASSWORD: '${MASTODON_POSTGRES_PASSWORD}'
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', '${MASTODON_POSTGRES_USERNAME}', '-d', '${MASTODON_POSTGRES_DATABASE}']
+      interval: 5s
+      timeout: 5s
 
   mastodon-redis:
     image: 'redis:alpine'
@@ -17,6 +21,10 @@ services:
     command: 'redis-server --save 60 1 --loglevel warning'
     volumes:
       - 'mastodon-redis-volume:/data'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
 
   mastodon-web:
     extends:
@@ -28,17 +36,21 @@ services:
     environment:
       MASTODON_ADMIN_USERNAME: '${MASTODON_ADMIN_USERNAME}'
       MASTODON_ADMIN_EMAIL: '${MASTODON_ADMIN_EMAIL}'
-      WEB_CONCURRENCY: 1
+      WEB_CONCURRENCY: 0
       MAX_THREADS: 4
       SINGLE_USER_MODE: "true" 
-    depends_on:
-      - mastodon-db
-      - mastodon-redis
     healthcheck:
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:3000/health || exit 1']
       interval: 5s
       timeout: 5s
       retries: 12
+    depends_on:
+      mastodon-db:
+        condition: service_healthy
+      mastodon-redis:
+        condition: service_healthy
+      mastodon-es:
+        condition: service_healthy
  
   mastodon-streaming:
     extends:
@@ -97,6 +109,8 @@ services:
       file: 'docker-compose.base.yaml'
       service: 'mastodon-base'
     command: 'bundle exec sidekiq -c 8'
+    healthcheck:
+      test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
     depends_on:
       mastodon-web:
         condition: service_healthy

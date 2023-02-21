@@ -1,0 +1,13 @@
+version: '3'
+services:
+  mebitek_local:
+    container_name: mebitek.local
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - /home/pi/mebitek.local/data:/data
+      - /home/pi/mebitek.local/letsencrypt:/etc/letsencrypt
