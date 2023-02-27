@@ -7,8 +7,8 @@ services:
       - 8096:8096
 #      - 8920:8920
     volumes:
-      - /home/pi/jellyfin/config:/config
-      - /home/pi/jellyfin/cache:/cache
+      - /home/mebitek/jellyfin/config:/config
+      - /home/mebitek/jellyfin/cache:/cache
       - /mnt/seagate/media:/media:rw
     restart: unless-stopped
     deploy:
@@ -16,8 +16,3 @@ services:
         limits:
           cpus: '2'
           memory: 1024M
-     
-    devices:
-      # VAAPI Devices (examples)
-      - /dev/dri/renderD128:/dev/dri/renderD128
-      - /dev/dri/card0:/dev/dri/card0
