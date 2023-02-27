@@ -36,7 +36,7 @@ services:
     environment:
       MASTODON_ADMIN_USERNAME: '${MASTODON_ADMIN_USERNAME}'
       MASTODON_ADMIN_EMAIL: '${MASTODON_ADMIN_EMAIL}'
-      WEB_CONCURRENCY: 0
+      WEB_CONCURRENCY: 2
       MAX_THREADS: 4
       SINGLE_USER_MODE: "true" 
     healthcheck:
@@ -58,7 +58,7 @@ services:
       service: 'mastodon-base'
     command: 'node ./streaming'
     environment:
-      STREAMING_CLUSTER_NUM: 2
+      STREAMING_CLUSTER_NUM: 4
     healthcheck:
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
     depends_on:
@@ -71,7 +71,7 @@ services:
     volumes:
       - 'mastodon-es-volume:/usr/share/elasticsearch/data'
     environment:
-      - 'ES_JAVA_OPTS=-Xms128m -Xmx512m'
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
       - 'xpack.license.self_generated.type=basic'
       - 'xpack.security.enabled=false'
       - 'xpack.watcher.enabled=false'
@@ -92,10 +92,10 @@ services:
     image: 'caddy:latest'
     restart: always
     volumes:
-      - '/home/pi/compose/mastodon/certs:/root/certs'
+      - '/home/mebitek/compose/mastodon/certs:/root/certs'
       - 'caddy-data-volume:/data'
       - 'caddy-config-volume:/config'
-      - '/home/pi/compose/mastodon/caddyfile:/etc/caddy/Caddyfile:ro'
+      - '/home/mebitek/compose/mastodon/caddyfile:/etc/caddy/Caddyfile:ro'
     environment:
       MASTODON_DOMAIN: '${MASTODON_DOMAIN}'
     ports:
@@ -108,7 +108,7 @@ services:
     extends:
       file: 'docker-compose.base.yaml'
       service: 'mastodon-base'
-    command: 'bundle exec sidekiq -c 8'
+    command: 'bundle exec sidekiq'
     healthcheck:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
     depends_on:
