@@ -33,7 +33,7 @@ services:
     environment:
       - BIND_ADDRESS=0.0.0.0:8080
       - BASE_URL=https://searx.mebitek.com
-      - INSTANCE_NAME=searx.mebitek.com
+      - INSTANCE_NAME=TEST searx.mebitek.com
     cap_drop:
       - ALL
     cap_add:
