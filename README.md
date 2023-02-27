@@ -14,6 +14,7 @@
 - [Restic](https://github.com/restic/restic)
 - [Vaultwarden](https://github.com/dani-garcia/vaultwarden)
 - [qBittorrent](https://github.com/qbittorrent/qBittorrent)
+- [Jackett](https://github.com/Jackett/Jackett)
 - [Sonarr](https://github.com/Sonarr/Sonarr)
 - [Radarr](https://github.com/Radarr/Radarr)
 - [Matrix Synapse](https://github.com/matrix-org/synapse)
