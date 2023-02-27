@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+
+  postgres:
+    image: "postgres:14"
+    restart: "unless-stopped"
+    environment:
+      POSTGRES_PASSWORD: "admin"
+    volumes:
+      - "/home/pi/matrix/data/postgres/data:/var/lib/postgresql/data"
+
+  redis:
+    image: "redis:latest"
+    restart: "unless-stopped"
+
+  synapse:
+    image: "matrixdotorg/synapse:latest"
+    restart: "unless-stopped"
+    ports:
+      - 8008:8008
+    environment:
+      SYNAPSE_CONFIG_DIR: "/data"
+      SYNAPSE_CONFIG_PATH: "/data/homeserver.yaml"
+      UID: "1000"
+      GID: "1000"
+      TZ: "Europe/London"
+    volumes:
+      - "/home/pi/matrix/data/matrix/synapse:/data"
+
+  nginx:
+    image: "nginx:latest"
+    restart: "unless-stopped"
+    ports:
+      - 8085:80
+    volumes:
+      - "/home/pi/matrix/data/matrix/nginx/matrix.conf:/etc/nginx/conf.d/matrix.conf"
+      - /home/pi/matrix/data/matrix/nginx/www:/var/www/
+
+
