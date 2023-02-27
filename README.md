@@ -14,4 +14,6 @@
 - [Restic](https://github.com/restic/restic)
 - [Vaultwarden](https://github.com/dani-garcia/vaultwarden)
 - [qBittorrent](https://github.com/qbittorrent/qBittorrent)
-- [NGINX Proxy Manager](https://github.com/NginxProxyManager/nginx-proxy-manager)
+- [Sonarr](https://github.com/Sonarr/Sonarr)
+- [Radarr](https://github.com/Radarr/Radarr)
+- [Matrix Synapse](https://github.com/matrix-org/synapse)
