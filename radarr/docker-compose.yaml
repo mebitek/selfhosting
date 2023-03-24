@@ -13,4 +13,4 @@ services:
       - /srv/qbittorrent/downloads:/downloads #optional
     ports:
       - 7878:7878
-    restart: unless-stopped
+    restart: always
