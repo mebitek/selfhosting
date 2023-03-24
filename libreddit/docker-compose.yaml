@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  libreddit:
+    container_name: libreddit
+    image: libreddit/libreddit
+    restart: always
+    command: libreddit -r
+    environment:
+     - LIBREDDIT_DEFAULT_WIDE="on"
+     - LIBREDDIT_DEFAULT_THEME="light"
+     - LIBREDDIT_DEFAULT_POST_SORT="new"
+     - LIBREDDIT_DEFAULT_COMMENT_SORT="new"
+     - LIBREDDIT_DEFAULT_USE_HLS="on"
+    ports:
+      - 8088:8080
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "--tries=1", "http://localhost:8080/settings"]
+      interval: 5m
+      timeout: 3s
+
+
+
