@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  wikiless:
+    image: ghcr.io/metastem/wikiless:latest
+    environment:
+      # see config.js.template for more settings
+      DOMAIN: wikiless.mebitek.org
+      HTTP_ADDR: 0.0.0.0
+      REDIS_URL: redis://redis
+    ports:
+      - 8086:8080
+    restart: always
+  redis:
+    image: "redis:alpine"
+    restart: always
