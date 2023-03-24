@@ -10,7 +10,7 @@ services:
       - /home/mebitek/jellyfin/config:/config
       - /home/mebitek/jellyfin/cache:/cache
       - /mnt/seagate/media:/media:rw
-    restart: unless-stopped
+    restart: always
     deploy:
       resources:
         limits:
