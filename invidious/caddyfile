@@ -1,6 +1,3 @@
-{
-  debug
-}
 https://{$INVIDIOUS_DOMAIN} {
   tls /root/certs/caddy.pem /root/certs/caddy.key
 
