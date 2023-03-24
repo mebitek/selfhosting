@@ -2,8 +2,10 @@ version: "3"
 services:
 
   invidious:
-    image: quay.io/invidious/invidious:latest-arm64 # ARM64/AArch64 devices
+    image: quay.io/invidious/invidious:latest # ARM64/AArch64 devices
     restart: always
+    ports:
+      - 3001:3000
     environment:
       # Please read the following file for a comprehensive list of all available
       # configuration options and their associated syntax:
@@ -38,9 +40,9 @@ services:
     image: docker.io/library/postgres:14
     restart: always
     volumes:
-      - /home/pi/invidious/postgresdata:/var/lib/postgresql/data
-      - /home/pi/invidious/config/sql:/config/sql
-      - /home/pi/invidious/docker/init-invidious-db.sh:/docker-entrypoint-initdb.d/init-invidious-db.sh
+      - /home/mebitek/invidious/postgresdata:/var/lib/postgresql/data
+      - /home/mebitek/invidious/config/sql:/config/sql
+      - /home/mebitek/invidious/docker/init-invidious-db.sh:/docker-entrypoint-initdb.d/init-invidious-db.sh
     environment:
       POSTGRES_DB: invidious
       POSTGRES_USER: ${INVIDIOUS_DB_USER}
@@ -52,10 +54,10 @@ services:
     image: 'caddy:latest'
     restart: always
     volumes:
-      - '/home/pi/compose/invidious/certs:/root/certs'
-      - '/home/pi/invidious/caddy-data:/data'
-      - '/home/pi/invidious/caddy-config:/config'
-      - '/home/pi/compose/invidious/caddyfile:/etc/caddy/Caddyfile:ro'
+      - '/home/mebitek/compose/invidious/certs:/root/certs'
+      - '/home/mebitek/invidious/caddy-data:/data'
+      - '/home/mebitek/invidious/caddy-config:/config'
+      - '/home/mebitek/compose/invidious/caddyfile:/etc/caddy/Caddyfile:ro'
     environment:
       INVIDIOUS_DOMAIN: '${INVIDIOUS_DOMAIN}'
     ports:
