@@ -14,4 +14,4 @@ services:
       - /home/mebitek/jackett/blackhole:/downloads
     ports:
       - 9117:9117
-    restart: unless-stopped
+    restart: always
