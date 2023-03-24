@@ -1,0 +1,84 @@
+version: "3.8"
+services:
+   mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - /home/pi/music.mebitek/mysql:/var/lib/mysql
+      - /home/pi/music.mebitek/lnazirrp_music_mebitek.sql:/root/lnazirrp_music_mebitek.sql
+      - /home/pi/music.mebitek/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
+    restart: always
+    ports:
+      - "3306:3306"
+
+    networks:
+      mebitek-music:
+       ipv4_address: 172.11.0.2
+
+   redis:
+    image: redis:latest
+    command: 'redis-server --save 60 1 --loglevel warning'
+    ports:
+      - "6379:6379"
+    volumes:
+      - /home/pi/music.mebitek/redis:/data
+    restart: always
+    networks:
+      mebitek-music:
+       ipv4_address: 172.11.0.3  
+
+   web:
+    image: nginx:latest
+    ports:
+      - "8180:80"
+    volumes:
+      - /home/pi/music.mebitek/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /home/pi/music.mebitek/nginx/conf.d:/etc/nginx/conf.d/
+      - /home/pi/music.mebitek/website:/usr/share/nginx/html/
+    restart: always
+    networks:
+      mebitek-music:
+       ipv4_address: 172.11.0.4
+
+   php:
+    image: php:8.1.16-fpm-bullseye
+    build:
+      context: ./php
+      dockerfile: Dockerfile      
+    networks:
+      mebitek-music:
+       ipv4_address: 172.11.0.5
+    volumes:
+      - /home/pi/music.mebitek/website:/usr/share/nginx/html/
+      - /home/pi/music.mebitek/php.ini:/usr/local/etc/php/php.ini
+      - /home/pi/music.mebitek/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      - /home/pi/music.mebitek/pngout:/usr/local/bin/pngout
+      - /home/pi/music.mebitek/jpegtran:/usr/local/bin/jpegtran
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+    restart: always
+
+   phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8181:80
+    environment:
+      - PMA_ARBITRARY=1
+    networks:
+      mebitek-music:
+       ipv4_address: 172.11.0.7
+    restart: always
+
+
+networks:
+   mebitek-music:
+     external: true
+
+
+
+
