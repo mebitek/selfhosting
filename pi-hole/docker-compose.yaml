@@ -20,6 +20,8 @@ services:
     environment:
       TZ: 'Europe/Berlin'
       WEBPASSWORD: ${PIHOLE_PASSWORD}
+      DNSMASQ_USER: 'root'
+      PIHOLE_UID: 0
    
     networks:
       pihole:
