@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mastodon-db:
-    image: 'postgres:alpine'
+    image: 'postgres:15-alpine'
     restart: always
     volumes:
       - 'mastodon-db-volume:/var/lib/postgresql/data'
