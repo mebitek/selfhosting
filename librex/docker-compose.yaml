@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  librex:
+    image: librex/librex:latest
+    build:
+      context: ../..
+      dockerfile: app/Docker/Dockerfile.release
+    container_name: librex
+    dns: 172.10.1.2
+    ports:
+      - 8083:8080
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - VERSION=docker
+      - TZ:"Europe/Berlin"
+      - CONFIG_GOOGLE_DOMAIN:com
+      - CONFIG_GOOGLE_LANGUAGE:en
+      - CONFIG_WIKIPEDIA_LANGUAGE:en
+      - OPEN_SEARCH_TITLE:librex.mebitek.com
+      - CONFIG_INVIDIOUS_INSTANCE:https://invidious.mebitek.com
+      - OPEN_SEARCH_HOST:http://localhost:8083
+    volumes:
+      - ./nginx_logs:/var/log/nginx
+      - ./php_logs:/var/log/php7
+    restart: always
+    networks:
+      pihole:
+        ipv4_address: 172.10.1.6
+
+networks:
+  pihole:
+    external: true
+

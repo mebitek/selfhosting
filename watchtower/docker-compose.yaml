@@ -19,7 +19,7 @@ services:
       - WATCHTOWER_HTTP_API_METRICS=true
       - WATCHTOWER_HTTP_API_TOKEN=${TOKEN}
       - WATCHTOWER_NO_RESTART=false
-      - WATCHTOWER_INCLUDE_RESTARTING
+      - WATCHTOWER_INCLUDE_RESTARTING=true
     image: containrrr/watchtower:latest
     labels:
       com.centurylinklabs.watchtower: true
