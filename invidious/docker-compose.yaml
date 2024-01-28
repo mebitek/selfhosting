@@ -24,6 +24,7 @@ services:
         registration_enabled: false
         statistics_enabled: true
         external_port: 443        
+        hmac_key: ${INVIDIOUS_HMAC_KEY}
     healthcheck:
       test: ['CMD-SHELL', 'wget -nv --tries=1 --spider http://127.0.0.1:3000/api/v1/comments/jNQXAC9IVRw || exit 1']
       interval: 30s

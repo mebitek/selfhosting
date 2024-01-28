@@ -1,2 +1,6 @@
 **/.env
 **/*.key
+librex/librex/*
+librex/nginx_logs
+librex/nginx_logs
+librex/php_logs

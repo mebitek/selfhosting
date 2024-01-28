@@ -1,0 +1,26 @@
+version: "3.3"
+
+services:
+  pialert:
+    container_name: pialert
+    image: jokobsk/pi.alert:latest
+    restart: always
+    network_mode: host
+    privileged: true
+    environment:
+      - TZ=Europe/Rome
+      - HOST_USER_ID=1000
+      - HOST_USER_GID=1000
+      - PORT=20211
+    volumes:
+    # after first start, edit pialert.conf -> SCAN_SUBNETS=['10.10.10.0/24 --interface=enp6s18']
+      - /home/pi/pialert/config:/home/pi/pialert/config
+      #- /home/pi/pialert/config/notification_text.txt:/home/pi/pialert/front/api/notification_text.txt
+      - /home/pi/pialert/db:/home/pi/pialert/db
+      - /home/pi/pialert/logs:/home/pi/pialert/front/log
+      - /home/pi/pi-hole/etc-pihole:/etc/pihole
+    healthcheck:
+      test: "curl --fail -s http://192.168.0.101:20211/ || exit 1"
+      interval: 30s
+      timeout: 10s
+      retries: 3

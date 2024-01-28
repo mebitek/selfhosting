@@ -1,11 +1,20 @@
-version: '3'
+version: '3.9'
 
 services:
   nginx:
-    image: nginx
+    image: nginx:latest
     container_name: mebitek.com
     restart: always
     volumes:
-      - /home/pi/mebitek.com:/usr/share/nginx/html
+      - /home/pi/mebitek.com:/var/www/html/
+      - /home/pi/nginx/conf.d/mebitek.com.conf:/etc/nginx/conf.d/default.conf
+      - /home/pi/nginx/mail_config.ini:/var/www/html/inc/mail_config.ini
     ports:
       - "8080:80"
+    links:
+      - php-fpm
+
+  php-fpm:
+    build: docker/php-fpm    
+    volumes:
+      - /home/pi/mebitek.com:/var/www/html/
