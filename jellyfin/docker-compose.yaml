@@ -5,14 +5,18 @@ services:
     container_name: jellyfin
     ports:
       - 8096:8096
-#      - 8920:8920
+      - 8920:8920
     volumes:
       - /home/mebitek/jellyfin/config:/config
       - /home/mebitek/jellyfin/cache:/cache
       - /mnt/seagate/media:/media:rw
+      - /dev/shm:/transcode
+    devices:                                    # import drivers for HW accel
+      - /dev/dri/card0:/dev/dri/card0
+      - /dev/dri/renderD128:/dev/dri/renderD128
     restart: always
     deploy:
       resources:
         limits:
           cpus: '2'
-          memory: 1024M
+          memory: 2048M
