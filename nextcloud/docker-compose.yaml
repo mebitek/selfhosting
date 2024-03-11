@@ -38,9 +38,9 @@ services:
       timeout: 5s
 
   nextclouddb:
-    image: mariadb
+    image: mariadb:lts
     container_name: nextcloud-db
-    restart: unless-stopped
+    restart: always
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     networks: 
       - cloud
@@ -58,6 +58,7 @@ services:
   redis:
     image: redis:alpine
     container_name: redis
+    restart: always
     volumes:
       - /home/mebitek/nextcloud/redis:/data  
     networks: 
