@@ -30,10 +30,14 @@ services:
     extends:
       file: 'docker-compose.base.yaml'
       service: 'mastodon-base'
-    command: 'bash -c "/provision.sh; rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000"'
+    command: 'bash -c "/provision.sh; rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000 -b 0.0.0.0"'
     volumes:
       - './provision.sh:/provision.sh:ro'
+    ports:
+      - 3000:3000
     environment:
+      PUID: 991
+      GUID: 991
       MASTODON_ADMIN_USERNAME: '${MASTODON_ADMIN_USERNAME}'
       MASTODON_ADMIN_EMAIL: '${MASTODON_ADMIN_EMAIL}'
       WEB_CONCURRENCY: 2
