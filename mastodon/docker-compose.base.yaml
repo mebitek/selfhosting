@@ -25,3 +25,7 @@ services:
       ES_HOST: 'mastodon-es' # name of the elasticsearch container
       VAPID_PRIVATE_KEY: '${MASTODON_VAPID_PRIVATE_KEY}'
       VAPID_PUBLIC_KEY: '${MASTODON_VAPID_PUBLIC_KEY}'
+      SIDEKIQ_THREADS: 5
+      DB_POOL: 5
+      SIDEKIQ_DEFAULT: "true"
+
