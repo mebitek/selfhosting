@@ -9,8 +9,8 @@ services:
       - TZ=Etc/UTC
       - WEBUI_PORT=8080
     volumes:
-      - /srv/qbittorrent/appdata/config:/config
-      - /srv/qbittorrent/downloads/:/downloads
+      - /home/mebitek/qbittorrent/appdata/config:/config
+      - /home/mebitek/qbittorrent/downloads/:/downloads
     ports:
       - 8080:8080
       - 6881:6881
