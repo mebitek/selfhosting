@@ -7,13 +7,8 @@ services:
     ports:
       - 9980:9980
     environment:
-<<<<<<< HEAD
-      - domain=nextcloud\.mebitek\.com|collabora\.mebitek\.com
-      - server_name=collabora\.mebitek\.com
-=======
       - domain=nextcloud.mebitek.com
       - server_name=collabora.mebitek.com
->>>>>>> 77594e4 (fix collabora)
       - username=${COLLABORA_USERNAME}
       - password=${COLLABORA_PASSWORD}
       - extra_params=--o:ssl.enable=false --o:ssl.termination=true
