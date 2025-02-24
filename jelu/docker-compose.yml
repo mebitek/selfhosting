@@ -1,0 +1,12 @@
+services:
+  jelu:
+    image: wabayang/jelu
+    container_name: jelu
+    volumes:
+      - ~/jelu/config:/config
+      - ~/jelu/database:/database
+      - ~/jelu/files/images:/files/images
+      - ~/jelu/files/imports:/files/imports
+    ports:
+      - 11111:11111
+    restart: always
