@@ -11,6 +11,8 @@ services:
       - /home/pi/nginx/mail_config.ini:/var/www/html/inc/mail_config.ini
     ports:
       - "8080:80"
+    depends_on:
+      - php-fpm
     links:
       - php-fpm
 
