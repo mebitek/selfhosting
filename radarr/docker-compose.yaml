@@ -10,7 +10,7 @@ services:
     volumes:
       - /home/mebitek/radarr/data:/config
       - /mnt/seagate/media/Film:/movies #optional
-      - /srv/qbittorrent/downloads:/downloads #optional
+      - /home/mebitek/qbittorrent/downloads:/downloads #optional
     ports:
       - 7878:7878
     restart: always

@@ -10,7 +10,7 @@ services:
     volumes:
       - /home/mebitek/sonarr/data:/config
       - /mnt/seagate/media/tvseries:/tv #optional
-      - /srv/qbittorrent/downloads:/downloads #optional
+      - /home/mebitek/qbittorrent/downloads:/downloads #optional
     ports:
       - 8989:8989
     restart: always

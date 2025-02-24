@@ -5,7 +5,7 @@ services:
     image: 'postgres:15-alpine'
     restart: always
     volumes:
-      - 'mastodon-db-volume:/var/lib/postgresql/data'
+      - '/home/mebitek/mastodon/mastodon-db-volume:/var/lib/postgresql/data'
     environment:
       POSTGRES_DB: '${MASTODON_POSTGRES_DATABASE}'
       POSTGRES_USER: '${MASTODON_POSTGRES_USERNAME}'
@@ -20,7 +20,7 @@ services:
     restart: always
     command: 'redis-server --save 60 1 --loglevel warning'
     volumes:
-      - 'mastodon-redis-volume:/data'
+      - '/home/mebitek/mastodon/mastodon-redis-volume:/data'
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
@@ -30,10 +30,14 @@ services:
     extends:
       file: 'docker-compose.base.yaml'
       service: 'mastodon-base'
-    command: 'bash -c "/provision.sh; rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000"'
+    command: 'bash -c "/provision.sh; rm -f /mastodon/tmp/pids/server.pid; bundle exec rails s -p 3000 -b 0.0.0.0"'
     volumes:
       - './provision.sh:/provision.sh:ro'
+    ports:
+      - 3000:3000
     environment:
+      PUID: 991
+      GUID: 991
       MASTODON_ADMIN_USERNAME: '${MASTODON_ADMIN_USERNAME}'
       MASTODON_ADMIN_EMAIL: '${MASTODON_ADMIN_EMAIL}'
       WEB_CONCURRENCY: 2
@@ -59,6 +63,8 @@ services:
     command: 'node ./streaming'
     environment:
       STREAMING_CLUSTER_NUM: 4
+    ports:
+      - 4000:4000
     healthcheck:
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:4000/api/v1/streaming/health || exit 1']
     depends_on:
@@ -69,7 +75,7 @@ services:
     image: 'docker.elastic.co/elasticsearch/elasticsearch:7.17.7'
     restart: always
     volumes:
-      - 'mastodon-es-volume:/usr/share/elasticsearch/data'
+      - '/home/mebitek/mastodon/mastodon-es-volume:/usr/share/elasticsearch/data'
     environment:
       - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
       - 'xpack.license.self_generated.type=basic'
@@ -93,8 +99,8 @@ services:
     restart: always
     volumes:
       - '/home/mebitek/compose/mastodon/certs:/root/certs'
-      - 'caddy-data-volume:/data'
-      - 'caddy-config-volume:/config'
+      - '/home/mebitek/mastodon/caddy-data-volume:/data'
+      - '/home/mebitek/mastodon/caddy-config-volume:/config'
       - '/home/mebitek/compose/mastodon/caddyfile:/etc/caddy/Caddyfile:ro'
     environment:
       MASTODON_DOMAIN: '${MASTODON_DOMAIN}'

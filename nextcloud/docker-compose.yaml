@@ -17,10 +17,10 @@ services:
       - /home/mebitek/nextcloud/html:/var/www/html
       - /home/mebitek/nextcloud/custom_apps:/var/www/html/custom_apps
       - /home/mebitek/nextcloud/config:/var/www/html/config
-      - /home/mebitek/nextcloud/data:/var/www/html/data
+      - /home/mebitek/nextcloud/data:/var/www/html/data:Z
     environment:
-      - PUID=1000
-      - PGID=1000
+      - UID=33
+      - GID=33
       - TZ=Europe/Rome
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=${MYSQL_USER}
@@ -38,17 +38,15 @@ services:
       timeout: 5s
 
   nextclouddb:
-    image: mariadb
+    image: mariadb:lts
     container_name: nextcloud-db
-    restart: unless-stopped
+    restart: always
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     networks: 
       - cloud
     volumes:
       - /home/mebitek/nextcloud/nextclouddb:/var/lib/mysql
     environment:
-      - PUID=1000
-      - PGID=1000
       - TZ=Europe/Rome
       - MYSQL_RANDOM_ROOT_PASSWORD=true
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
@@ -58,6 +56,7 @@ services:
   redis:
     image: redis:alpine
     container_name: redis
+    restart: always
     volumes:
       - /home/mebitek/nextcloud/redis:/data  
     networks: 

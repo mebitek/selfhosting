@@ -4,22 +4,16 @@ services:
     image: collabora/code:latest
     restart: always
     container_name: collabora
-    deploy:
-        resources:
-            limits:
-              cpus: 0.50
-              memory: 1024M
     ports:
       - 9980:9980
     environment:
-      - domain=nextcloud\.mebitek\.com
+      - domain=nextcloud\.mebitek\.com|collabora\.mebitek\.com
       - server_name=collabora\.mebitek\.com
       - username=${COLLABORA_USERNAME}
       - password=${COLLABORA_PASSWORD}
       - extra_params=--o:ssl.enable=false --o:ssl.termination=true
     volumes:
       - /etc/localtime:/etc/localtime
-      - /etc/timezone:/etc/timezone
     cap_drop:
       - ALL
     cap_add:
