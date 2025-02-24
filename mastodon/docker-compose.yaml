@@ -43,6 +43,9 @@ services:
       WEB_CONCURRENCY: 2
       MAX_THREADS: 4
       SINGLE_USER_MODE: "true" 
+      ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: '${MASTODON_KEYS}' 
+      ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: '${MASTODON_KEYS}'
+      ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: '${MASTODON_KEYS}'
     healthcheck:
       test: ['CMD-SHELL', 'wget -q --spider --proxy=off localhost:3000/health || exit 1']
       interval: 5s
@@ -60,7 +63,10 @@ services:
     extends:
       file: 'docker-compose.base.yaml'
       service: 'mastodon-base'
-    command: 'node ./streaming'
+    #command: 'node ./streaming'
+    image: ghcr.io/mastodon/mastodon-streaming:v4.3.3
+    restart: always
+    command: node ./streaming/index.js
     environment:
       STREAMING_CLUSTER_NUM: 4
     ports:
@@ -72,7 +78,7 @@ services:
         condition: service_healthy
 
   mastodon-es:
-    image: 'docker.elastic.co/elasticsearch/elasticsearch:7.17.7'
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:7.17.26'
     restart: always
     volumes:
       - '/home/mebitek/mastodon/mastodon-es-volume:/usr/share/elasticsearch/data'
@@ -88,6 +94,11 @@ services:
       - 'discovery.type=single-node'
       - 'thread_pool.write.queue_size=1000'
       - 'ingest.geoip.downloader.enabled=false'
+    ulimits:
+      memlock:
+        #nofile:
+        soft: 65536
+        hard: 65536
     healthcheck:
       test: ['CMD-SHELL', 'curl --silent --fail localhost:9200/_cluster/health || exit 1']
       interval: 5s
@@ -111,17 +122,29 @@ services:
         condition: service_healthy
 
   mastodon-sidekiq:
+    image: ghcr.io/mastodon/mastodon:v4.3.3
+    restart: always
     extends:
       file: 'docker-compose.base.yaml'
       service: 'mastodon-base'
     command: 'bundle exec sidekiq'
+    environment:
+      ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: '${MASTODON_KEYS}' 
+      ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: '${MASTODON_KEYS}'
+      ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: '${MASTODON_KEYS}'
     healthcheck:
       test: ['CMD-SHELL', "ps aux | grep '[s]idekiq\ 6' || false"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
     depends_on:
-      mastodon-web:
+      mastodon-db:
         condition: service_healthy
-      
-
+      mastodon-redis:
+        condition: service_healthy
+      mastodon-es:
+        condition: service_healthy
+ 
 volumes:
   mastodon-db-volume:
     external: true
