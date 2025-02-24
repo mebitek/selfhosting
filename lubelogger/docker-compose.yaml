@@ -1,0 +1,33 @@
+version: "3.4"
+
+services:
+  app:
+    image: ghcr.io/hargata/lubelogger:latest
+    build: .
+    restart: unless-stopped
+    # volumes used to keep data persistent
+    volumes:
+      - data:/home/mebitek/lubelogger/data
+      - keys:/home/mebitek/.aspnet/DataProtection-Keys
+    # expose port and/or use serving via traefik
+    ports:
+      - 8081:8080
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:14
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "lubelogger"
+      POSTGRES_PASSWORD: "lubepass"
+      POSTGRES_DB: "lubelogger"
+    volumes:
+      - ./init.sql:/home/mebitek/git/selfhosting/lubelogger/init.sql
+      - postgres:/home/mebitek/lubelogger/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+
+volumes:
+  data:
+  keys:
+  postgres:
